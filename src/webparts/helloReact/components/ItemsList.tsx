@@ -26,13 +26,8 @@ export class ItemsList extends React.Component<IItemsListProps, {}> {
     return (
       <tr>
         <td>
-          <DefaultButton
-            text="Edit"
-            data={item.id}
-            onClick={() => this._onButtonClick(item)}
-          />
+          <a href={item.editUrl}>{item.title}</a>
         </td>
-        <td>{item.title}</td>
       </tr>
     );
   }

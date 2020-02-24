@@ -8,6 +8,11 @@ import {ItemsList} from './ItemsList';
 
 import { SPHttpClient, SPHttpClientResponse } from "@microsoft/sp-http";
 
+  require('sp-init');
+  require('microsoft-ajax');
+  require('sp-runtime');
+  require('sharepoint');
+
 export default class Tabs extends React.Component<ITabsProps, ITabsState> {
   constructor(props: ITabsProps) {
     super(props);
@@ -67,8 +72,21 @@ export default class Tabs extends React.Component<ITabsProps, ITabsState> {
   }
 
   private _editItem = (itemToEdit: IItem): void => {
-      alert(itemToEdit.title);
+      //alert(itemToEdit.title);
+      this.ShowPopupDialog(`${this.props.currentSiteUrl}/Lists/Testliste/EditForm.aspx?ID=1`,400,400);
   }
+
+  private  ShowPopupDialog(url:string, width:number, height:number) {
+    var options = {
+      url : url,
+      width : width,
+      height : height
+    //options.dialogReturnValueCallback = RefreshOnDialogClose;
+    };
+    SP.UI.ModalDialog.showModalDialog(options);
+}
+
+
   private readItems(): Promise<IItem[]> {
     return new Promise<IItem[]>((resolve, reject) => {
       const endpoint: string = `${this.props.currentSiteUrl}/_api/lists/getbytitle('Testliste')/items?$select=Id,Title`;
@@ -87,7 +105,8 @@ export default class Tabs extends React.Component<ITabsProps, ITabsState> {
           for (let index = 0; index < jsonResponse.value.length; index++) {
             spListItems.push({
               id: jsonResponse.value[index].Id,
-              title: jsonResponse.value[index].Title
+              title: jsonResponse.value[index].Title,
+              editUrl:`${this.props.currentSiteUrl}/Lists/Testliste/EditForm.aspx?ID=${jsonResponse.value[index].Id}&Source=${this.props.currentSiteUrl}/SitePages/WebpartTest.aspx`
             });
 
             resolve(spListItems);
