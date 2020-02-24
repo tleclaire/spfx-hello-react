@@ -2,7 +2,7 @@ import * as React from 'react';
 import styles from './HelloReact.module.scss';
 import { IHelloReactProps } from './IHelloReactProps';
 import { escape } from '@microsoft/sp-lodash-subset';
-import tabs from './tabs';
+import { SPHttpClient, SPHttpClientResponse } from '@microsoft/sp-http';
 import Tabs from './tabs';
 
 export default class HelloReact extends React.Component<IHelloReactProps, {}> {
@@ -10,7 +10,7 @@ export default class HelloReact extends React.Component<IHelloReactProps, {}> {
     return (
       <div className={ styles.helloReact }>
         <div className={ styles.container }>
-          <Tabs>
+          <Tabs spHttpClient={this.props.spHttpClient} currentSiteUrl={this.props.currentSiteUrl}>
 
           </Tabs>
         </div>

@@ -4,7 +4,7 @@
     "name": "spfx-hello-react-client-side-solution",
     "id": "516f9a0e-19c0-4b69-b2aa-bcd2e5973bbf",
     "version": "1.0.0.0",
-    "includeClientSideAssets": true,
+    "includeClientSideAssets": false,
     "isDomainIsolated": false
   },
   "paths": {

@@ -6,3 +6,4 @@ rem cmd /c gulp package-solution --ship
 cmd /c gulp bundle
 cmd /c gulp package-solution
 PowerShell.exe -ExecutionPolicy Bypass -File UploadDocuments.ps1
+gulp serve --nobrowser

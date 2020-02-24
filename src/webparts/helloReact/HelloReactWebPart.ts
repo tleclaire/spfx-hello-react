@@ -21,7 +21,9 @@ export default class HelloReactWebPart extends BaseClientSideWebPart <IHelloReac
     const element: React.ReactElement<IHelloReactProps> = React.createElement(
       HelloReact,
       {
-        description: this.properties.description
+        description: this.properties.description,
+        spHttpClient:this.context.spHttpClient,
+        currentSiteUrl: this.context.pageContext.web.absoluteUrl
       }
     );
 
