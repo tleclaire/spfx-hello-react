@@ -5,8 +5,10 @@ import { ITabsState } from "./ITabsState";
 import { ITabsProps } from "./ITabsProps";
 import { IItem } from "./IItem";
 import {ItemsList} from './ItemsList';
+import {SPListList} from './SPListsList';
 
 import { SPHttpClient, SPHttpClientResponse } from "@microsoft/sp-http";
+import { ISPList } from "./ISPList";
 
   require('sp-init');
   require('microsoft-ajax');
@@ -16,8 +18,9 @@ import { SPHttpClient, SPHttpClientResponse } from "@microsoft/sp-http";
 export default class Tabs extends React.Component<ITabsProps, ITabsState> {
   constructor(props: ITabsProps) {
     super(props);
-    this.state = { activeTab: "tab-1", items: [] };
+    this.state = { activeTab: "tab-1", items: [],lists:[] };
     this.handler.bind(this);
+
   }
 
   private handler(value) {
@@ -47,6 +50,7 @@ export default class Tabs extends React.Component<ITabsProps, ITabsState> {
               <td>Hallo React</td>
             </tr>
           </table>
+          <SPListList lists={this.state.lists} onEditItem={this._editList}></SPListList>
         </Tab>
         <Tab
           id="tab-3"
@@ -66,9 +70,39 @@ export default class Tabs extends React.Component<ITabsProps, ITabsState> {
   }
 
   public componentDidMount(): void {
+
     this.readItems().then((itemsResult: IItem[]) => {
       this.setState({ items: itemsResult });
     });
+
+    this.getListsTitles().then((listsResult:ISPList[])=>
+    {
+        this.setState({ lists: listsResult});
+    });
+  }
+
+  private getListsTitles():Promise<ISPList[]> {
+
+    const context: SP.ClientContext = new SP.ClientContext(this.props.currentSiteUrl);
+    const lists: SP.ListCollection = context.get_web().get_lists();
+    context.load(lists, 'Include(Title, DefaultViewUrl)');
+    return new Promise<ISPList[]>((resolve, reject) => context.executeQueryAsync((sender: any, args: SP.ClientRequestSucceededEventArgs): void => {
+      const listEnumerator: IEnumerator<SP.List> = lists.getEnumerator();
+
+      const myLists: ISPList[] = [];
+      while (listEnumerator.moveNext()) {
+        const list: SP.List = listEnumerator.get_current();
+        myLists.push(
+        {
+           title: list.get_title(),
+           url:list.get_defaultViewUrl()
+        });
+      }
+       resolve(myLists);
+    }));
+  }
+
+  private _editList = (listToEdit: ISPList): void => {
   }
 
   private _editItem = (itemToEdit: IItem): void => {
